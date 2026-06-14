@@ -1,76 +1,95 @@
 <!DOCTYPE html>
-<html lang="en" >
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Work state</title>
-    <link rel="stylesheet" href="css/all.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=0.8" />
+    <link rel="stylesheet" href="css/all.min.css" />
     <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/responsive.css" />
+    <title>WorkState | Mini App for Focusing & Managing Tasks</title>
   </head>
   <body>
     <header>
-      <div><i class="fa fa-duotone fa-box-alt"></i></div>
-      <div>
-        <button class="task-box-btn"><i class="fa fa-duotone fa-tasks"></i></button>
-        <button class="timer-box-btn"><i class="fa fa-duotone fa-timer"></i></button>
-        <button class="note-box-btn"><i class="fa fa-duotone fa-note"></i></button>
+      <p><i class="fa fa-box-alt"></i> Welcome to Work<strong>State</strong></p>
+      <div class="btn-bar">
+        <button class="tab-toggle" data-target="#note"><i class="fa fa-note"></i></button>
+        <button class="tab-toggle" data-target="#timer"><i class="fa fa-timer"></i></button>
+        <button class="tab-toggle" data-target="#todo-list"><i class="fa fa-list"></i></button>
+        <button class="theme-toggle"><i class="fa fa-sun-alt"></i></button>
       </div>
     </header>
     <main>
-      <section class="note-box">
-        <div>
-          <div>
-            <h3>note:</h3>
-            <button class="note-box-cls"><i class="fa fa-close"></i></button>
+      <section class="actions">
+        <div class="tab active visible" id="todo-list">
+          <div class="tab-panel">
+            <button class="close-tab"><i class="fa fa-close"></i> close</button>
+            <p class="tab-name">Todo List</p>
           </div>
-          <textarea id="" cols="25" rows="10" dir="rtl"></textarea>
+          <div class="todo-input">
+            <input type="text" placeholder="Write your task" /><button><i class="fa fa-add"></i></button>
+          </div>
+          <ul class="todo-list">
+            <li>
+              <button><i class="fa fa-circle-notch"></i></button>
+              <input type="text" value="hello world" readonly />
+              <div>
+                <button class="edit-todo"><i class="fa fa-pencil-alt"></i></button>
+                <button class="delete-todo"><i class="fa fa-trash-alt"></i></button>
+              </div>
+            </li>
+            <li class="checked">
+              <button><i class="fa fa-circle-check"></i></button>
+              <input type="text" value="hello world" readonly />
+              <div>
+                <button class="edit-todo"><i class="fa fa-pencil-alt"></i></button>
+                <button class="delete-todo"><i class="fa fa-trash-alt"></i></button>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="tab" id="timer">
+          <div class="tab-panel">
+            <button class="close-tab"><i class="fa fa-close"></i> close</button>
+            <p class="tab-name">Timer</p>
+          </div>
+          <input type="text" value="10:10" size="5" maxlength="5" minlength="5" readonly />
+          <div class="btn-bar">
+            <button><i class="fa fa-play"></i></button>
+            <button><i class="fa fa-refresh"></i></button>
+            <button><i class="fa fa-pencil-alt"></i></button>
+          </div>
+          <div class="suggestions">
+            <button>05:00</button>
+            <button>10:00</button>
+            <button>30:00</button>
+          </div>
+        </div>
+        <div class="tab" id="note">
+          <div class="tab-panel">
+            <button class="close-tab"><i class="fa fa-close"></i> close</button>
+            <p class="tab-name">Note</p>
+          </div>
+          <textarea dir="auto" rows="8" placeholder="Write something"></textarea>
         </div>
       </section>
-      <section class="timer-box">
-        <div>
-          <div>
-            <h3>Timer</h3>
-            <button class="timer-box-cls"><i class="fa fa-close"></i></button>
-          </div>
-          <div>
-            <input class="timer-time" type="text" value="25:0" readonly />
-            <div>
-              <button class="play-pause-btn"><i class="fa fa-play"></i></button>
-              <button class="refresh-btn"><i class="fa fa-refresh"></i></button>
-              <button class="edit-btn"><i class="fa fa-duotone fa-pencil-alt"></i></button>
-            </div>
-          </div>
-        </div>
-      </section>
-      <section class="task-box">
-        <div>
-          <div>
-            <h3>tasks</h3>
-            <button class="task-box-cls"><i class="fa fa-close"></i></button>
-          </div>
-          <div>
-            <div>
-              <input type="text" class="task-input" />
-              <button class="add-task"><i class="fa fa-plus"></i></button>
-            </div>
-            <div class="task-bar">
-              
-              
-            </div>
-          </div>
-        </div>
-      </section>
+      <section></section>
     </main>
     <footer>
-      <div>
-        <h1>Work State</h1>
-        <i class="fa fa-duotone fa-box-alt"></i>
-      </div>
-      <div>
-        <p>&copy; 2024-2025 All Rights Reserved</p>
-      </div>
+      <h1><i class="fa fa-box-alt"></i> WorkState</h1>
+      <p>Focus. Organize. Succeed — anywhere, on any device.</p>
+      <ul class="social-btn">
+        <li>
+          <a href=""><i class="fab fa-github"></i></a>
+        </li>
+        <li>
+          <a href=""><i class="fab fa-instagram"></i></a>
+        </li>
+        <li>
+          <a href=""><i class="fab fa-linkedin-in"></i></a>
+        </li>
+      </ul>
     </footer>
-    <script src="app.js"></script>
+    <script src="script.js"></script>
   </body>
 </html>

@@ -1,0 +1,11 @@
+{
+  "name": "workstate",
+  "version": "2.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "live-server --no-browser --no-css-inject --port=80 --watch=../V2.0.0"
+  },
+  "author": "B_codraNext",
+  "license": "ISC"
+}

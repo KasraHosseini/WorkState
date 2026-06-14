@@ -1,0 +1,15 @@
+@media (max-width: 768px) {
+  /* html {
+    zoom: 0.8;
+  } */
+  section.actions {
+    top: 130px;
+  }
+  section.actions .tab .tab-panel {
+    gap: var(--gap-l);
+    flex-direction: row;
+    bottom: 100%;
+    left: 0;
+    transform: translateY(-10px);
+  }
+}

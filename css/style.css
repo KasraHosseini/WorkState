@@ -1,284 +1,392 @@
+:root,
+[data-theme="light"] {
+  --font-xxl: 3em;
+  --font-xl: 32px;
+  --font-l: 23px;
+  --font-s: 18px;
+
+  --rounded-l: 14px;
+  --rounded-s: 4px;
+
+  --rounded-first: var(--rounded-l) var(--rounded-s) var(--rounded-s) var(--rounded-l);
+  --rounded-last: var(--rounded-s) var(--rounded-l) var(--rounded-l) var(--rounded-s);
+
+  --btn-sizing-l: 38px;
+  --btn-sizing-s: 28px;
+
+  --padding-l: 10px;
+  --padding-s: 5px;
+
+  --gap-l: 10px;
+  --gap-s: 4px;
+
+  /*   colors    */
+  --bg-primary-1: #fff5;
+  --bg-primary-2: #fffa;
+  --bg-secondary: #0002;
+
+  --txt-color: black;
+
+  --btn-bg-color: var(--bg-primary-1);
+  --btn-bg-color-hover: black;
+  --btn-txt-color: var(--txt-color);
+  --btn-txt-color-hover: white;
+  --del-txt-btn: #ff5858;
+}
+[data-theme="dark"] {
+  --bg-primary-1: #0005;
+  --bg-primary-2: #000a;
+  --bg-secondary: #fff2;
+
+  --txt-color: white;
+
+  --btn-bg-color: var(--bg-primary-1);
+  --btn-bg-color-hover: white;
+  --btn-txt-color: var(--txt-color);
+  --btn-txt-color-hover: black;
+  --del-txt-btn: #ff5858;
+}
+
 * {
   padding: 0;
   margin: 0;
   box-sizing: border-box;
-  font-family: Arial, Helvetica, sans-serif;
 }
 body {
-  min-height: 100vh;
-  background: linear-gradient(135deg, #433d8b, #2e236c, #17153b);
+  background-image: url(../Media/US-wp5.jpg);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 100vh;
+  font-family: Arial, Helvetica, sans-serif;
+  color: var(--txt-color);
 }
-header {
-  padding: 10px 20px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background-color: #fff3;
-  border-radius: 0 0 8px 8px;
-  border-bottom: 2px #fff5 solid;
-}
-h1 {
-  color: white;
-  font-weight: 300;
-  font-size: 25px;
-}
-header > div:last-of-type {
-  display: flex;
-  justify-content: space-evenly;
-  align-items: center;
-  gap: 10px;
-}
-button {
-  background-color: transparent;
-  border: unset;
+button,
+a {
   cursor: pointer;
+  transition: 100ms;
 }
-header > div > i:first-of-type {
-  font-size: 30px;
-  color: white;
-}
-header button {
-  color: #ccf;
-  font-size: 20px;
-  width: 30px;
-  height: 30px;
-  border-radius: 3px;
-  background-color: #fff2;
-}
-header button.active {
-  background-color: white !important;
-}
-main {
-  position: relative;
-  width: 100%;
-  height: auto;
-}
-main h3 {
-  color: white;
-  font-weight: 300;
-  font-size: 17px;
-}
-
-section.note-box,
-section.timer-box,
-section.task-box {
-  position: absolute;
-  width: 320px;
-  top: 10px;
-  right: 10px;
-  height: 0;
-  background-color: #fff3;
-  border-radius: 10px;
-  transition: height 300ms;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-section.note-box.active,
-section.timer-box.active,
-section.task-box.active {
-  height: 280px !important;
-}
-section.note-box > div {
-  width: 85%;
-}
-section.note-box > div > div {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-section.note-box > div > div button {
-  color: white;
-  font-size: 20px;
-}
-section.note-box textarea {
-  background-color: #fffc;
-  border: 1px #fff3 solid;
-  border-radius: 10px;
-  color: black;
-  padding: 5px 10px;
-  resize: vertical;
+button:hover,
+a:hover {
+  background-color: var(--btn-bg-color-hover) !important;
+  color: var(--btn-txt-color-hover) !important;
 }
 input:focus,
-textarea:focus {
+textarea:focus,
+input,
+textarea {
   outline: unset;
+  color: var(--txt-color) !important;
 }
-section.timer-box > div {
-  width: 85%;
+
+/*   Header   */
+header {
+  width: 90%;
+  left: 5%;
+  top: 20px;
+  position: fixed;
+
+  background-color: var(--bg-primary-1);
+  backdrop-filter: blur(5px);
+  padding: var(--padding-l);
+  border-radius: var(--rounded-l);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
-section.timer-box > div > div:first-of-type {
+header p {
+  display: flex;
+  align-items: center;
+}
+header p i {
+  font-weight: 400;
+  font-size: var(--font-xl);
+  margin-right: 10px;
+}
+strong {
+  font-size: inherit;
+}
+header button {
+  background-color: var(--bg-primary-1);
+  color: var(--btn-txt-color);
+  border: unset;
+  font-size: var(--font-l);
+  padding: var(--padding-s);
+  width: var(--btn-sizing-l);
+  height: var(--btn-sizing-l);
+  border-radius: var(--rounded-s);
+}
+header button.active {
+  background-color: var(--btn-bg-color-hover) !important;
+  color: var(--btn-txt-color-hover) !important;
+}
+header div.btn-bar {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: var(--gap-l);
 }
-section.timer-box > div > div:first-of-type button {
-  color: white;
-  font-size: 20px;
+
+/*   main   */
+section.actions {
+  position: fixed;
+  top: 98px;
+  right: 5%;
 }
-section.timer-box > div > div:last-of-type {
-  color: white;
+section.actions .tab {
+  padding: var(--padding-l);
+  border-radius: var(--rounded-l);
+  background-color: var(--bg-primary-1);
+  backdrop-filter: blur(5px);
+  position: absolute;
+  top: 0;
+  right: 0;
+  transition: 100ms;
+  transform: translateY(-10%);
+  opacity: 0;
+  z-index: 1;
+  display: none !important;
+}
+section.actions .tab.visible {
+  opacity: 1;
+  z-index: 2;
+  transform: translateY(0);
+}
+.tab.active.active {
+  display: flex !important;
+}
+
+section.actions .tab .tab-panel {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
+  gap: var(--gap-l);
+  flex-direction: column;
+  align-items: flex-end;
+  width: fit-content;
+
+  position: absolute;
+  top: 0;
+  right: 100%;
+transform: translateX(-10px);
 }
-section.timer-box > div > div:last-of-type > input:read-only {
-  background-color: transparent;
-}
-section.timer-box > div > div:last-of-type > input {
-  font-size: 40px;
+section.actions .tab .tab-panel .tab-name {
+  font-size: var(--font-s);
+  color: var(--txt-color);
+  background-color: var(--bg-primary-2);
   display: inline-block;
+  width: fit-content;
+  padding: var(--padding-s) var(--padding-l);
+  border-radius: var(--rounded-l);
+  white-space: nowrap;
+}
+.close-tab {
+  width: 79px !important;
+  height: fit-content !important;
+  padding: 5px 10px !important;
+  font-size: var(--font-s) !important;
+  border-radius: var(--rounded-l) !important;
+
+  background-color: var(--bg-primary-2) !important;
+  backdrop-filter: blur(5px);
+
+  color: var(--btn-txt-color);
+  border: unset;
+  white-space: nowrap;
+}
+.close-tab:hover {
+  color: var(--del-txt-btn) !important;
+}
+
+/*   Todo List   */
+section.actions #todo-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-l);
+}
+section.actions #todo-list .todo-input {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  gap: var(--gap-s);
+}
+section.actions #todo-list .todo-input input {
+  font-size: var(--font-l);
+  padding: var(--padding-s);
+  height: var(--btn-sizing-l);
+  width: 300px;
+
+  background-color: var(--bg-primary-2);
+  border: unset;
+  border-radius: var(--rounded-s);
+}
+section.actions #todo-list button {
+  background-color: var(--bg-primary-1);
+  color: var(--btn-txt-color);
+  border: unset;
+  font-size: var(--font-l);
+  padding: var(--padding-s);
+  width: var(--btn-sizing-l);
+  height: var(--btn-sizing-l);
+  border-radius: var(--rounded-s);
+}
+section.actions #todo-list .todo-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-s);
+}
+section.actions #todo-list .todo-list li {
+  padding: var(--padding-s);
+  height: var(--btn-sizing-l);
+
+  background-color: var(--bg-primary-1);
+  border-radius: var(--rounded-s);
+
+  display: flex;
+  gap: var(--gap-s);
+}
+section.actions #todo-list .todo-list li input {
+  font-size: var(--font-s);
   background-color: transparent;
   border: unset;
-  color: white;
-  background-color: #fff5;
-  width: 100%;
-  border-radius: 10px;
-  padding: 0 5px;
+  width: 236px;
+  border-radius: var(--rounded-s);
 }
-section.timer-box > div > div:last-of-type button {
-  background-color: #fff2;
-  color: #ccf;
-  width: 30px;
-  height: 30px;
-  border-radius: 3px;
-  font-size: 20px;
+
+section.actions #todo-list .todo-list li input:not(:read-only) {
+  background-color: var(--bg-secondary);
 }
-section.timer-box > div > div:last-of-type button.active {
-  background-color: #fff !important;
-}
-section.task-box > div {
-  width: 85%;
-}
-section.task-box > div > div:first-of-type {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-section.task-box > div > div:first-of-type button {
-  font-size: 20px;
-  color: white;
-}
-section.task-box > div > div:last-of-type {
+section.actions #todo-list .todo-list li div {
+  margin-left: auto;
+  gap: var(--gap-s);
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-direction: column;
 }
-section.task-box > div > div:last-of-type > div:first-of-type {
-  display: flex;
+
+section.actions #todo-list .todo-list li button {
+  font-size: var(--font-s);
+  width: var(--btn-sizing-s);
+  height: var(--btn-sizing-s);
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  width: 100%;
 }
-section.task-box > div > div:last-of-type > div:first-of-type input {
-  border: 1px #fff6 solid;
-  border-right: unset;
-  border-radius: 10px 0 0 10px;
-  background-color: #fff5;
-  color: white;
-  height: 28px;
-  padding: 0 5px;
-  flex-grow: 3;
+section.actions #todo-list .todo-list li button.delete-todo:hover {
+  color: var(--del-txt-btn) !important;
+  background-color: var(--btn-bg-color) !important;
 }
-section.task-box > div > div:last-of-type > div:first-of-type button {
-  border-radius: 0 10px 10px 0;
-  background-color: black;
-  color: white;
-  height: 28px;
-  flex-grow: 1;
+/*   Todo Checked   */
+section.actions #todo-list .todo-list li.checked {
+  background-color: var(--bg-secondary);
 }
-section.task-box > div > div:last-of-type > div:last-of-type {
-  display: flex;
-  align-items: center;
-  justify-content: start;
-  flex-direction: column;
-  padding-top: 5px;
-  height: 200px;
-  overflow-x: auto;
-}
-::-webkit-scrollbar {
-  width: 5px;
-}
-section.task-box > div > div:last-of-type > div:last-of-type .task.active input {
+section.actions #todo-list .todo-list li.checked input {
   text-decoration: line-through;
 }
-section.task-box > div > div:last-of-type > div:last-of-type .task.active {
-  background-color: #afa2;
-}
-section.task-box > div > div:last-of-type > div:last-of-type .task {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  justify-content: center;
-  border-bottom: 1px #fff5 solid;
-  padding: 5px 8px;
-}
-section.task-box > div > div:last-of-type > div:last-of-type .task > button {
-  flex-grow: 1;
-  color: #ccf;
-  font-size: 20px;
-  width: 30px;
-  height: 30px;
-}
-section.task-box > div > div:last-of-type > div:last-of-type .task button.active {
-  color: #fff;
-}
-section.task-box > div > div:last-of-type > div:last-of-type .task > input:read-only {
-  background-color: transparent;
-}
-section.task-box > div > div:last-of-type > div:last-of-type .task > input {
-  flex-grow: 4;
-  background-color: #fff5;
-  border-radius: 3px;
-  padding: 2px 4px;
-  color: white;
-  border: unset;
-}
-section.task-box > div > div:last-of-type > div:last-of-type .task > div {
-  flex-grow: 2;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-}
-section.task-box > div > div:last-of-type > div:last-of-type .task > div button {
-  color: #ccf;
-  font-size: 20px;
-  width: 30px;
-  height: 30px;
-}
-/*
-//
-*/
 
-footer {
-  padding: 10px 20px;
+/*    timer   */
+section.actions #timer {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: space-between;
-  background-color: #fff3;
-  border-radius: 8px 8px 0 0;
-  border-top: 2px #fff5 solid;
-  position: absolute;
-  bottom: 0;
-  left: 0;
+  gap: var(--gap-l);
+  text-align: center;
+}
+section.actions #timer input {
+  background-color: transparent;
+  border: unset;
+  font-size: var(--font-xxl);
+  text-align: center;
+  border-radius: var(--rounded-s);
+}
+section.actions #timer input:not(:read-only) {
+  background-color: var(--bg-secondary);
+}
+section.actions #timer .btn-bar {
+  display: flex;
+  gap: var(--gap-s);
+}
+section.actions #timer :not(.suggestions) button {
+  font-size: var(--font-s);
+  width: var(--btn-sizing-s);
+  height: var(--btn-sizing-s);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg-primary-1);
+  color: var(--btn-txt-color);
+  border: unset;
+  padding: var(--padding-s);
+  border-radius: var(--rounded-s);
+}
+section.actions #timer .suggestions {
+  display: flex;
+  gap: var(--gap-s);
+}
+section.actions #timer .suggestions button {
+  font-size: var(--font-l);
+  background-color: var(--bg-primary-1);
+  color: var(--btn-txt-color);
+  border: unset;
+  padding: var(--padding-s);
+  border-radius: var(--rounded-s);
+}
+
+/*   Note   */
+section.actions #note {
+  width: 25vw;
+  min-width: 250px;
+}
+section.actions #note textarea {
+  background-color: var(--bg-primary-1);
+  border: unset;
+  border-radius: var(--rounded-s);
+  font-size: var(--font-s);
+  resize: none;
   width: 100%;
 }
-footer > div:first-of-type {
+section.actions #note textarea::placeholder {
+  font-size: var(--font-s);
+}
+
+/*   Footer   */
+footer {
+  position: fixed;
+  bottom: 20px;
+  left: 1%;
+  width: 98%;
+  text-align: center;
+
+  background-color: var(--bg-primary-1);
+  backdrop-filter: blur(5px);
+  padding: var(--padding-l);
+  border-radius: var(--rounded-l);
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-l);
+}
+footer ul.social-btn {
+  list-style: none;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 10px;
+  justify-content: center;
+  gap: var(--gap-s);
 }
-footer > div:first-of-type i {
-  font-size: 30px;
-  color: white;
+footer ul.social-btn a {
+  display: inline-block;
+  text-decoration: none;
+  color: var(--btn-txt-color);
+  width: var(--btn-sizing-l);
+  height: var(--btn-sizing-l);
+  font-size: var(--font-l);
+  padding: var(--padding-s);
+  background-color: var(--bg-primary-1);
+  border-radius: var(--rounded-s);
 }
-footer p {
-  font-size: 13px;
-  color: white;
+footer ul.social-btn li:first-of-type a {
+  border-radius: var(--rounded-first);
+}
+footer ul.social-btn li:last-of-type a {
+  border-radius: var(--rounded-last);
 }
