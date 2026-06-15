@@ -54,6 +54,7 @@
   padding: 0;
   margin: 0;
   box-sizing: border-box;
+  font-family: shabnam;
 }
 body {
   background-image: url(../Media/US-wp5.jpg);
@@ -61,7 +62,6 @@ body {
   background-repeat: no-repeat;
   background-size: cover;
   height: 100vh;
-  font-family: sans-serif;
   color: var(--txt-color);
 }
 button,
@@ -413,4 +413,23 @@ footer ul.social-btn li:first-of-type a {
 }
 footer ul.social-btn li:last-of-type a {
   border-radius: var(--rounded-last);
+}
+.clear-memory {
+  width: fit-content !important;
+  height: fit-content !important;
+  padding: 5px 10px !important;
+  font-size: var(--font-s) !important;
+  border-radius: var(--rounded-l) !important;
+
+  background-color: var(--bg-primary-2) !important;
+  backdrop-filter: blur(5px);
+
+  color: var(--btn-txt-color);
+  border: unset;
+  white-space: nowrap;
+
+  position: absolute;
+  top: -10px;
+  left: 0;
+  transform: translate(0, -100%);
 }

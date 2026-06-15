@@ -1,9 +1,12 @@
 let themeMode = window.matchMedia("(prefers-color-scheme:dark)");
 window.addEventListener("DOMContentLoaded", () => {
   localStorageConfig();
+  clearMemory();
   darkMode(themeMode.matches);
+  localStorageConfig("post", "darkMode", themeMode.matches);
   TabBtn();
   ToDo();
+  saveNote();
 });
 // localStorage
 function localStorageConfig(mode, target, data) {
@@ -22,11 +25,15 @@ function localStorageConfig(mode, target, data) {
         }
       }
       return [];
-
+    case "clear":
+      localStorage.clear();
+      break;
     default:
       let localStorageData = localStorage.getItem("configured");
       if (!localStorageData) {
+        localStorage.clear();
         localStorage.setItem("configured", true);
+        localStorage.setItem("note", []);
         localStorage.setItem(
           "tasks",
           JSON.stringify([
@@ -46,10 +53,18 @@ function localStorageConfig(mode, target, data) {
       break;
   }
 }
+function clearMemory() {
+  let btn = document.querySelector(".clear-memory");
+  btn.addEventListener("click", () => {
+    if (confirm("Clearing Memory\nAre you sure to clear all data from WorkState?")) {
+      localStorageConfig("clear");
+      if (confirm("After clearing Memory you must refresh your browser to configure again.")) location.reload();
+    }
+  });
+}
 // Theme
 function darkMode(mode) {
   document.body.setAttribute("data-theme", mode ? "dark" : "light");
-  localStorageConfig("post", "theme", mode ? "dark" : "light");
   document.querySelector(".theme-toggle").children[0].classList.add(mode ? "fa-moon" : "fa-sun-alt");
   document.querySelector(".theme-toggle").children[0].classList.remove(!mode ? "fa-moon" : "fa-sun-alt");
 }
@@ -57,17 +72,8 @@ themeMode.addEventListener("change", () => {
   darkMode(themeMode.matches);
 });
 document.querySelector(".theme-toggle").addEventListener("click", () => {
-  document.querySelector(".theme-toggle").children[0].classList.toggle("fa-sun-alt");
-  document.querySelector(".theme-toggle").children[0].classList.toggle("fa-moon");
-  switch (localStorage.getItem("theme")) {
-    case "dark":
-      darkMode(false);
-      break;
-
-    default:
-      darkMode(true);
-      break;
-  }
+  localStorageConfig("post", "darkMode", !localStorageConfig("get", "darkMode"));
+  darkMode(localStorageConfig("get", "darkMode"));
 });
 
 // tabs
@@ -126,27 +132,32 @@ function closeTabs() {
 
 // Todo List
 function ToDo() {
+  updateList();
   let btn = document.querySelector("#todo-add");
-
   btn.addEventListener("click", () => {
-    if (document.querySelector("#todo-input").value) {
-      addToDo(document.querySelector("#todo-input").value);
-      document.querySelector("#todo-input").value = "";
-    }
+    addToDo(document.querySelector("#todo-input").value);
     updateList();
   });
-  updateList();
+  document.addEventListener("keyup", (e) => {
+    if (e.key === "Enter") {
+      addToDo(document.querySelector("#todo-input").value);
+      updateList();
+    }
+  });
 }
 function updateList() {
   let container = document.querySelector(".todo-list");
   container.innerHTML = "";
   toDoData = localStorageConfig("get", "tasks");
+  let NoTask = document.createElement("li");
+  NoTask.innerHTML = "All done, Good job :)";
 
-  toDoData.map((elem) => {
-    let Task = document.createElement("li");
-    Task.setAttribute("data-id", elem.id);
-    if (elem.checked) Task.classList.add("checked");
-    Task.innerHTML = `
+  if (toDoData.length != 0) {
+    toDoData.map((elem) => {
+      let Task = document.createElement("li");
+      Task.setAttribute("data-id", elem.id);
+      if (elem.checked) Task.classList.add("checked");
+      Task.innerHTML = `
      <input type="checkbox" onchange="editToDo('check', '${elem.id}')" ${elem.checked ? "checked" : ""}>
      <input type="text" value="${elem.title}" readonly dir='auto'/>
      <div>
@@ -158,12 +169,17 @@ function updateList() {
        </button>
      </div>
   `;
-    container.appendChild(Task);
-  });
+      container.appendChild(Task);
+    });
+  } else container.appendChild(NoTask);
 }
 function addToDo(taskTitle) {
-  let toDoData = [{id: Date.now(), title: taskTitle, checked: false}];
-  localStorageConfig("post", "tasks", [...toDoData, ...localStorageConfig("get", "tasks")]);
+  if (document.querySelector("#todo-input").value) {
+    let toDoData = [{id: Date.now(), title: taskTitle, checked: false}];
+    localStorageConfig("post", "tasks", [...toDoData, ...localStorageConfig("get", "tasks")]);
+  }
+  document.querySelector("#todo-input").value = "";
+  document.querySelector("#todo-input").focus();
 }
 function editToDo(mode, id) {
   let data = localStorageConfig("get", "tasks");
@@ -205,4 +221,15 @@ function delToDo(id) {
   data = data.filter((elem) => elem.id != id);
   localStorageConfig("post", "tasks", data);
   updateList();
+}
+
+// Note
+function saveNote() {
+  var Note = document.querySelector(".note");
+  Note.addEventListener("keyup", () => {
+    localStorageConfig("post", "note", document.querySelector(".note").value);
+  });
+}
+function getNote() {
+  Note.value = localStorageConfig("get", "note");
 }

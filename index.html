@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=0.8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="css/all.min.css" />
     <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="css/responsive.css" />
@@ -27,7 +27,7 @@
             <p class="tab-name">Todo List</p>
           </div>
           <div class="todo-input">
-            <input type="text" placeholder="Write your task" id="todo-input"/><button id="todo-add"><i class="fa fa-add"></i></button>
+            <input type="text" placeholder="Write your task" id="todo-input"/><button id="todo-add"><i class="fa fa-add" dir="auto"></i></button>
           </div>
           <ul class="todo-list">
           </ul>
@@ -54,7 +54,7 @@
             <button class="close-tab"><i class="fa fa-close"></i> close</button>
             <p class="tab-name">Note</p>
           </div>
-          <textarea dir="auto" rows="8" placeholder="Write something"></textarea>
+          <textarea dir="auto" rows="8" placeholder="Write something" class="note"></textarea>
         </div>
       </section>
       <section></section>
@@ -73,6 +73,7 @@
           <a href=""><i class="fab fa-linkedin-in"></i></a>
         </li>
       </ul>
+      <button class="clear-memory">Clear Memory</button>
     </footer>
     <script src="script.js"></script>
   </body>
