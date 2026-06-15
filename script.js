@@ -67,7 +67,7 @@ function clearMemory() {
 function darkMode(mode) {
   document.body.setAttribute("data-theme", mode ? "dark" : "light");
   document.querySelector(".theme-toggle").children[0].classList.add(mode ? "fa-moon" : "fa-sun-alt");
-  document.querySelector(".theme-toggle").children[0].classList.remove(mode ? "fa-moon" : "fa-sun-alt");
+  document.querySelector(".theme-toggle").children[0].classList.remove(!mode ? "fa-moon" : "fa-sun-alt");
 }
 themeMode.addEventListener("change", () => {
   darkMode(themeMode.matches);
