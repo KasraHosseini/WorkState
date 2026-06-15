@@ -226,8 +226,8 @@ function delToDo(id) {
 }
 
 // Note
+var Note = document.querySelector(".note"); 
 function saveNote() {
-  var Note = document.querySelector(".note");
   Note.addEventListener("keyup", () => {
     localStorageConfig("post", "note", document.querySelector(".note").value);
   });
