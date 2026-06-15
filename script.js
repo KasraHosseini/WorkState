@@ -7,6 +7,7 @@ window.addEventListener("DOMContentLoaded", () => {
   TabBtn();
   ToDo();
   saveNote();
+  getNote();
 });
 // localStorage
 function localStorageConfig(mode, target, data) {
