@@ -205,6 +205,8 @@ section.actions #todo-list {
   display: flex;
   flex-direction: column;
   gap: var(--gap-l);
+
+  
 }
 section.actions #todo-list .todo-input {
   display: flex;
@@ -237,6 +239,8 @@ section.actions #todo-list .todo-list {
   display: flex;
   flex-direction: column;
   gap: var(--gap-s);
+  max-height: 300px;
+  overflow: auto;
 }
 section.actions #todo-list .todo-list li {
   padding: var(--padding-s);
