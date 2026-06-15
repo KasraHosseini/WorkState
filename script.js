@@ -203,7 +203,8 @@ function editToDo(mode, id) {
       Task.children[2].children[0].setAttribute("onclick", `editToDo('send edited title', ${id})`);
       break;
     case "send edited title":
-      title = document.querySelector(`[data-id="${id}"`).children[1].value;
+      title = document.querySelector(`[data-id="${id}"]`).children[1].value;
+
       data.forEach((elem) => {
         if (+elem.id === +id) {
           elem.title = title;
