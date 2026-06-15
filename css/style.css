@@ -46,7 +46,10 @@
   --btn-txt-color-hover: black;
   --del-txt-btn: #ff5858;
 }
-
+@font-face {
+  font-family: "shabnam";
+  src: url(../Shabnam.ttf);
+}
 * {
   padding: 0;
   margin: 0;
@@ -58,7 +61,7 @@ body {
   background-repeat: no-repeat;
   background-size: cover;
   height: 100vh;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: sans-serif;
   color: var(--txt-color);
 }
 button,
@@ -167,7 +170,7 @@ section.actions .tab .tab-panel {
   position: absolute;
   top: 0;
   right: 100%;
-transform: translateX(-10px);
+  transform: translateX(-10px);
 }
 section.actions .tab .tab-panel .tab-name {
   font-size: var(--font-s);
@@ -180,7 +183,7 @@ section.actions .tab .tab-panel .tab-name {
   white-space: nowrap;
 }
 .close-tab {
-  width: 79px !important;
+  width: fit-content !important;
   height: fit-content !important;
   padding: 5px 10px !important;
   font-size: var(--font-s) !important;
@@ -272,15 +275,32 @@ section.actions #todo-list .todo-list li button {
   align-items: center;
   justify-content: center;
 }
+section.actions #todo-list .todo-list li input[type="checkbox"] {
+  font-size: var(--font-s);
+  width: var(--btn-sizing-s);
+  height: var(--btn-sizing-s);
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  appearance: none;
+  border: 2px black solid;
+  cursor: pointer;
+}
+
 section.actions #todo-list .todo-list li button.delete-todo:hover {
   color: var(--del-txt-btn) !important;
   background-color: var(--btn-bg-color) !important;
 }
 /*   Todo Checked   */
+section.actions #todo-list .todo-list li input[type="checkbox"]:checked::before {
+  content: "\2713";
+  font-weight: 900;
+}
 section.actions #todo-list .todo-list li.checked {
   background-color: var(--bg-secondary);
 }
-section.actions #todo-list .todo-list li.checked input {
+section.actions #todo-list .todo-list li.checked input[type="text"] {
   text-decoration: line-through;
 }
 
@@ -306,7 +326,7 @@ section.actions #timer .btn-bar {
   display: flex;
   gap: var(--gap-s);
 }
-section.actions #timer :not(.suggestions) button {
+section.actions #timer .btn-bar button {
   font-size: var(--font-s);
   width: var(--btn-sizing-s);
   height: var(--btn-sizing-s);
