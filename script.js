@@ -262,20 +262,22 @@ function Timer() {
 function playTimer(mode, display, btn) {
   switch (mode) {
     case "start":
-      document.querySelector(btn).setAttribute("onclick", "playTimer('pause','.timer-input','.playpause-btn')");
-      document.querySelector(btn).innerHTML = `<i class="fa fa-pause"></i>`;
-      timerInterval = setInterval(() => {
-        seconds = localStorageConfig("get", "timer");
-        if (seconds != 0) {
-          minutes = Math.floor(seconds / 60);
-          seconds = seconds - minutes * 60;
-          document.querySelector(display).value = (minutes.toString().length < 2 ? `0${minutes}` : minutes) + ":" + (seconds.toString().length < 2 ? `0${seconds}` : seconds);
-          localStorageConfig("post", "timer", +localStorageConfig("get", "timer") - 1);
-        } else {
-          document.querySelector(display).value = "00:00";
-          pauseTimer();
-        }
-      }, 1000);
+      if (localStorageConfig("get", "timer") != 0) {
+        document.querySelector(btn).setAttribute("onclick", "playTimer('pause','.timer-input','.playpause-btn')");
+        document.querySelector(btn).innerHTML = `<i class="fa fa-pause"></i>`;
+        timerInterval = setInterval(() => {
+          seconds = localStorageConfig("get", "timer");
+          if (seconds != 0) {
+            minutes = Math.floor(seconds / 60);
+            seconds = seconds - minutes * 60;
+            document.querySelector(display).value = (minutes.toString().length < 2 ? `0${minutes}` : minutes) + ":" + (seconds.toString().length < 2 ? `0${seconds}` : seconds);
+            localStorageConfig("post", "timer", +localStorageConfig("get", "timer") - 1);
+          } else {
+            document.querySelector(display).value = "00:00";
+            pauseTimer();
+          }
+        }, 1000);
+      }
       break;
     case "pause":
       document.querySelector(btn).setAttribute("onclick", "playTimer('start','.timer-input','.playpause-btn')");
