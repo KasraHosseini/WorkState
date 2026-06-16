@@ -6,6 +6,7 @@ window.addEventListener("DOMContentLoaded", () => {
   localStorageConfig("post", "darkMode", themeMode.matches);
   TabBtn();
   ToDo();
+  Timer();
   saveNote();
   getNote();
 });
@@ -34,7 +35,9 @@ function localStorageConfig(mode, target, data) {
       if (!localStorageData) {
         localStorage.clear();
         localStorage.setItem("configured", true);
-        localStorage.setItem("note", []);
+        localStorage.setItem("note", "");
+        localStorage.setItem("timer", "0");
+        localStorage.setItem("savedTimer", "0");
         localStorage.setItem(
           "tasks",
           JSON.stringify([
@@ -150,6 +153,9 @@ function updateList() {
   let container = document.querySelector(".todo-list");
   container.innerHTML = "";
   toDoData = localStorageConfig("get", "tasks");
+
+  toDoData.sort((a, b) => a.checked - b.checked);
+
   let NoTask = document.createElement("li");
   NoTask.innerHTML = "All done, Good job :)";
 
@@ -225,8 +231,87 @@ function delToDo(id) {
   updateList();
 }
 
+// Timer
+let timerInterval;
+let seconds;
+let minutes;
+function Timer() {
+  let input = document.querySelector(".timer-input");
+  let suggestionBtns = [...document.querySelectorAll(".timer-suggestion")];
+
+  suggestionBtns.map((btn) => {
+    btn.addEventListener("click", () => {
+      clearInterval(timerInterval);
+      localStorageConfig(
+        "post",
+        "timer",
+        (btn.getAttribute("data-time-minute") == null ? 0 : btn.getAttribute("data-time-minute")) * 60 + (btn.getAttribute("data-time-second") == null ? 0 : btn.getAttribute("data-time-second"))
+      );
+      localStorageConfig(
+        "post",
+        "savedTimer",
+        (btn.getAttribute("data-time-minute") == null ? 0 : btn.getAttribute("data-time-minute")) * 60 + (btn.getAttribute("data-time-second") == null ? 0 : btn.getAttribute("data-time-second"))
+      );
+      input.value =
+        (Math.floor(localStorageConfig("get", "timer") / 60).toString().length < 2 ? "0" + Math.floor(localStorageConfig("get", "timer") / 60) : Math.floor(localStorageConfig("get", "timer") / 60)) +
+        ":" +
+        ((localStorageConfig("get", "timer") % 60).toString().length < 2 ? "0" + (localStorageConfig("get", "timer") % 60) : localStorageConfig("get", "timer") % 60);
+    });
+  });
+}
+function playTimer(mode, display, btn) {
+  switch (mode) {
+    case "start":
+      document.querySelector(btn).setAttribute("onclick", "playTimer('pause','.timer-input','.playpause-btn')");
+      document.querySelector(btn).innerHTML = `<i class="fa fa-pause"></i>`;
+      timerInterval = setInterval(() => {
+        seconds = localStorageConfig("get", "timer");
+        if (seconds != 0) {
+          minutes = Math.floor(seconds / 60);
+          seconds = seconds - minutes * 60;
+          document.querySelector(display).value = (minutes.toString().length < 2 ? `0${minutes}` : minutes) + ":" + (seconds.toString().length < 2 ? `0${seconds}` : seconds);
+          localStorageConfig("post", "timer", +localStorageConfig("get", "timer") - 1);
+        } else {
+          document.querySelector(display).value = "00:00";
+          pauseTimer();
+        }
+      }, 1000);
+      break;
+    case "pause":
+      document.querySelector(btn).setAttribute("onclick", "playTimer('start','.timer-input','.playpause-btn')");
+      document.querySelector(btn).innerHTML = `<i class="fa fa-play"></i>`;
+      clearInterval(timerInterval);
+      break;
+  }
+}
+function resetTimer(input) {
+  clearInterval(timerInterval);
+  localStorageConfig("post", "timer", localStorageConfig("get", "savedTimer"));
+  document.querySelector(input).value =
+    (Math.floor(localStorageConfig("get", "timer") / 60).toString().length < 2 ? "0" + Math.floor(localStorageConfig("get", "timer") / 60) : Math.floor(localStorageConfig("get", "timer") / 60)) +
+    ":" +
+    ((localStorageConfig("get", "timer") % 60).toString().length < 2 ? "0" + (localStorageConfig("get", "timer") % 60) : localStorageConfig("get", "timer") % 60);
+}
+function editTimer(mode, btn, input) {
+  switch (mode) {
+    case "edit":
+      document.querySelector(btn).setAttribute("onclick", "editTimer('send','.edit-btn','.timer-input')");
+      document.querySelector(btn).innerHTML = '<i class="fa fa-check"></i>';
+
+      document.querySelector(input).removeAttribute("readonly");
+
+      break;
+    case "send":
+      document.querySelector(btn).setAttribute("onclick", "editTimer('edit','.edit-btn','.timer-input')");
+      document.querySelector(btn).innerHTML = '<i class="fa fa-pencil-alt"></i>';
+      let [minutes, seconds] = document.querySelector(input).value.split(":").map(Number);
+      localStorageConfig("post", "timer", minutes * 60 + seconds);
+      document.querySelector(input).setAttribute("readonly", "");
+  }
+}
+
 // Note
-var Note = document.querySelector(".note"); 
+var Note = document.querySelector(".note");
 function saveNote() {
   Note.addEventListener("keyup", () => {
     localStorageConfig("post", "note", document.querySelector(".note").value);

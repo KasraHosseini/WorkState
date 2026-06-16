@@ -11,7 +11,9 @@
   </head>
   <body>
     <header>
-      <p><i class="fa fa-box-alt"></i> Welcome to Work<strong>State</strong></p>
+      <p>
+        <i class="fa fa-box-alt"></i><span> Welcome to Work<strong>State</strong></span>
+      </p>
       <div class="btn-bar">
         <button class="tab-toggle" data-target="#note"><i class="fa fa-note"></i></button>
         <button class="tab-toggle" data-target="#timer"><i class="fa fa-timer"></i></button>
@@ -27,26 +29,26 @@
             <p class="tab-name">Todo List</p>
           </div>
           <div class="todo-input">
-            <input type="text" placeholder="Write your task" id="todo-input"/><button id="todo-add"><i class="fa fa-add" dir="auto"></i></button>
+            <input type="text" placeholder="Write your task" id="todo-input" /><button id="todo-add"><i class="fa fa-add" dir="auto"></i></button>
           </div>
-          <ul class="todo-list">
-          </ul>
+          <ul class="todo-list"></ul>
         </div>
         <div class="tab" id="timer">
           <div class="tab-panel">
             <button class="close-tab"><i class="fa fa-close"></i> close</button>
             <p class="tab-name">Timer</p>
           </div>
-          <input type="text" value="10:10" size="5" maxlength="5" minlength="5" readonly />
+          <input type="text" class="timer-input" value="00:00" size="5" readonly placeholder="min:sec" />
           <div class="btn-bar">
-            <button><i class="fa fa-play"></i></button>
-            <button><i class="fa fa-refresh"></i></button>
-            <button><i class="fa fa-pencil-alt"></i></button>
+            <button class="playpause-btn" onclick="playTimer('start','.timer-input','.playpause-btn')"><i class="fa fa-play"></i></button>
+            <button class="reset-btn" onclick="resetTimer('.timer-input')"><i class="fa fa-refresh"></i></button>
+            <button class="edit-btn" onclick="editTimer('edit','.edit-btn','.timer-input')"><i class="fa fa-pencil-alt"></i></button>
           </div>
           <div class="suggestions">
-            <button>05:00</button>
-            <button>10:00</button>
-            <button>30:00</button>
+            <p>Suggestions</p>
+            <button class="timer-suggestion" data-time-minute="5">05:00</button>
+            <button class="timer-suggestion" data-time-minute="10">10:00</button>
+            <button class="timer-suggestion" data-time-minute="30">30:00</button>
           </div>
         </div>
         <div class="tab" id="note">
@@ -57,11 +59,13 @@
           <textarea dir="auto" rows="8" placeholder="Write something" class="note"></textarea>
         </div>
       </section>
-      <section></section>
     </main>
     <footer>
-      <h1><i class="fa fa-box-alt"></i> WorkState</h1>
-      <p>Focus. Organize. Succeed — anywhere, on any device.</p>
+      <div>
+        <h1><i class="fa fa-box-alt"></i> Work<strong>State</strong></h1>
+        <p>Focus. Organize. Succeed — anywhere, on any device.</p>
+      </div>
+
       <ul class="social-btn">
         <li>
           <a href=""><i class="fab fa-github"></i></a>
@@ -73,6 +77,7 @@
           <a href=""><i class="fab fa-linkedin-in"></i></a>
         </li>
       </ul>
+
       <button class="clear-memory">Clear Memory</button>
     </footer>
     <script src="script.js"></script>

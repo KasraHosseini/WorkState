@@ -1,9 +1,10 @@
 :root,
 [data-theme="light"] {
-  --font-xxl: 3em;
+  --font-xxl: 48px;
   --font-xl: 32px;
   --font-l: 23px;
   --font-s: 18px;
+  --font-xs: 15px;
 
   --rounded-l: 14px;
   --rounded-s: 4px;
@@ -13,6 +14,9 @@
 
   --btn-sizing-l: 38px;
   --btn-sizing-s: 28px;
+
+  --tab-sizing: 30vw;
+  --tab-sizing-m: 90vw;
 
   --padding-l: 10px;
   --padding-s: 5px;
@@ -99,6 +103,7 @@ header {
   justify-content: space-between;
 }
 header p {
+  font-size: var(--font-xs);
   display: flex;
   align-items: center;
 }
@@ -205,8 +210,8 @@ section.actions #todo-list {
   display: flex;
   flex-direction: column;
   gap: var(--gap-l);
-
-  
+  width: var(--tab-sizing);
+  min-width: 250px;
 }
 section.actions #todo-list .todo-input {
   display: flex;
@@ -218,7 +223,7 @@ section.actions #todo-list .todo-input input {
   font-size: var(--font-l);
   padding: var(--padding-s);
   height: var(--btn-sizing-l);
-  width: 300px;
+  width: 100%;
 
   background-color: var(--bg-primary-2);
   border: unset;
@@ -256,7 +261,7 @@ section.actions #todo-list .todo-list li input {
   font-size: var(--font-s);
   background-color: transparent;
   border: unset;
-  width: 236px;
+  width: 100%;
   border-radius: var(--rounded-s);
 }
 
@@ -281,8 +286,8 @@ section.actions #todo-list .todo-list li button {
 }
 section.actions #todo-list .todo-list li input[type="checkbox"] {
   font-size: var(--font-s);
-  width: var(--btn-sizing-s);
-  height: var(--btn-sizing-s);
+  width: var(--btn-sizing-s) !important;
+  height: var(--btn-sizing-s) !important;
   border-radius: 50%;
   display: inline-flex;
   align-items: center;
@@ -290,6 +295,7 @@ section.actions #todo-list .todo-list li input[type="checkbox"] {
   appearance: none;
   border: 2px black solid;
   cursor: pointer;
+  flex-shrink: 0;
 }
 
 section.actions #todo-list .todo-list li button.delete-todo:hover {
@@ -315,6 +321,7 @@ section.actions #timer {
   align-items: center;
   gap: var(--gap-l);
   text-align: center;
+  width: var(--tab-sizing);
 }
 section.actions #timer input {
   background-color: transparent;
@@ -322,6 +329,7 @@ section.actions #timer input {
   font-size: var(--font-xxl);
   text-align: center;
   border-radius: var(--rounded-s);
+  height: var(--font-xxl);
 }
 section.actions #timer input:not(:read-only) {
   background-color: var(--bg-secondary);
@@ -331,22 +339,30 @@ section.actions #timer .btn-bar {
   gap: var(--gap-s);
 }
 section.actions #timer .btn-bar button {
-  font-size: var(--font-s);
-  width: var(--btn-sizing-s);
-  height: var(--btn-sizing-s);
+  font-size: var(--font-l);
+  width: var(--btn-sizing-l);
+  height: var(--btn-sizing-l);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   background-color: var(--bg-primary-1);
   color: var(--btn-txt-color);
   border: unset;
-  padding: var(--padding-s);
+  padding: var(--padding-l);
   border-radius: var(--rounded-s);
+}
+section.actions #timer .btn-bar button:first-of-type {
+  border-radius: var(--rounded-first);
+}
+section.actions #timer .btn-bar button:last-of-type {
+  border-radius: var(--rounded-last);
 }
 section.actions #timer .suggestions {
   display: flex;
+  align-items: center;
   gap: var(--gap-s);
 }
+section.actions #timer .suggestions p {}
 section.actions #timer .suggestions button {
   font-size: var(--font-l);
   background-color: var(--bg-primary-1);
@@ -358,8 +374,7 @@ section.actions #timer .suggestions button {
 
 /*   Note   */
 section.actions #note {
-  width: 25vw;
-  min-width: 250px;
+  width: var(--tab-sizing);
 }
 section.actions #note textarea {
   background-color: var(--bg-primary-1);
@@ -377,9 +392,8 @@ section.actions #note textarea::placeholder {
 footer {
   position: fixed;
   bottom: 20px;
-  left: 1%;
-  width: 98%;
-  text-align: center;
+  left: 25%;
+  width: 50%;
 
   background-color: var(--bg-primary-1);
   backdrop-filter: blur(5px);
@@ -387,9 +401,16 @@ footer {
   border-radius: var(--rounded-l);
 
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
   gap: var(--gap-l);
 }
+footer h1 {
+  font-weight: lighter;
+}
+footer h1 strong {
+  font-weight: bold;
+}
+
 footer ul.social-btn {
   list-style: none;
   display: flex;
@@ -398,7 +419,9 @@ footer ul.social-btn {
   gap: var(--gap-s);
 }
 footer ul.social-btn a {
-  display: inline-block;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   text-decoration: none;
   color: var(--btn-txt-color);
   width: var(--btn-sizing-l);
@@ -418,7 +441,7 @@ footer ul.social-btn li:last-of-type a {
   width: fit-content !important;
   height: fit-content !important;
   padding: 5px 10px !important;
-  font-size: var(--font-s) !important;
+  font-size: var(--font-xs) !important;
   border-radius: var(--rounded-l) !important;
 
   background-color: var(--bg-primary-2) !important;
