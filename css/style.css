@@ -324,12 +324,23 @@ section.actions #timer {
   width: var(--tab-sizing);
 }
 section.actions #timer input {
-  background-color: transparent;
+  /* background-color: transparent;
   border: unset;
   font-size: var(--font-xxl);
   text-align: center;
+  height: var(--font-xxl); */
+  background-color: transparent;
+  border: unset;
+  text-align: center;
+  font-size: var(--font-xxl);
   border-radius: var(--rounded-s);
-  height: var(--font-xxl);
+  width: 70px;
+}
+section.actions #timer .input-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-xxl);
 }
 section.actions #timer input:not(:read-only) {
   background-color: var(--bg-secondary);
@@ -362,7 +373,7 @@ section.actions #timer .suggestions {
   align-items: center;
   gap: var(--gap-s);
 }
-section.actions #timer .suggestions p {}
+/* section.actions #timer .suggestions p {} */
 section.actions #timer .suggestions button {
   font-size: var(--font-l);
   background-color: var(--bg-primary-1);

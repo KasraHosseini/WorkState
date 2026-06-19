@@ -38,11 +38,15 @@
             <button class="close-tab"><i class="fa fa-close"></i> close</button>
             <p class="tab-name">Timer</p>
           </div>
-          <input type="text" class="timer-input" value="00:00" size="5" readonly placeholder="min:sec" />
+          <div class="input-bar">
+            <input type="text" class="timer-input-min" value="00" maxlength="2" readonly placeholder="min" />
+            :
+            <input type="text" class="timer-input-sec" value="00" maxlength="2" readonly placeholder="sec" />
+          </div>
           <div class="btn-bar">
-            <button class="playpause-btn" onclick="playTimer('start','.timer-input','.playpause-btn')"><i class="fa fa-play"></i></button>
-            <button class="reset-btn" onclick="resetTimer('.timer-input')"><i class="fa fa-refresh"></i></button>
-            <button class="edit-btn" onclick="editTimer('edit','.edit-btn','.timer-input')"><i class="fa fa-pencil-alt"></i></button>
+            <button class="playpause-btn"><i class="fa fa-play"></i></button>
+            <button class="reset-btn"><i class="fa fa-refresh"></i></button>
+            <button class="edit-btn"><i class="fa fa-pencil-alt"></i></button>
           </div>
           <div class="suggestions">
             <p>Suggestions</p>

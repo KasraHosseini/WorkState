@@ -1,67 +1,104 @@
 let themeMode = window.matchMedia("(prefers-color-scheme:dark)");
-window.addEventListener("DOMContentLoaded", () => {
-  localStorageConfig();
-  clearMemory();
-  darkMode(themeMode.matches);
-  localStorageConfig("post", "darkMode", themeMode.matches);
-  TabBtn();
-  ToDo();
-  Timer();
-  saveNote();
-  getNote();
-});
 // localStorage
-function localStorageConfig(mode, target, data) {
-  switch (mode) {
-    case "post":
-      localStorage.setItem(target, JSON.stringify(data));
-      break;
-    case "get":
-      const storedData = localStorage.getItem(target);
-      if (storedData) {
-        try {
-          return JSON.parse(storedData);
-        } catch (error) {
-          console.error("Error parsing JSON data:", error);
-          return [];
-        }
-      }
-      return [];
-    case "clear":
+let storage = {
+  init: () => {
+    if (!storage.get("configured")) {
       localStorage.clear();
-      break;
-    default:
-      let localStorageData = localStorage.getItem("configured");
-      if (!localStorageData) {
-        localStorage.clear();
-        localStorage.setItem("configured", true);
-        localStorage.setItem("note", "");
-        localStorage.setItem("timer", "0");
-        localStorage.setItem("savedTimer", "0");
-        localStorage.setItem(
-          "tasks",
-          JSON.stringify([
-            {
-              id: Date.now(),
-              title: "Sample Task",
-              checked: false,
-            },
-            {
-              id: Date.now() + 1,
-              title: "Checked Task",
-              checked: true,
-            },
-          ])
-        );
+      localStorage.setItem("configured", true);
+      localStorage.setItem("note", "Write some thing here...");
+      localStorage.setItem("timer", "0");
+      localStorage.setItem("savedTimer", "0");
+      localStorage.setItem(
+        "tasks",
+        JSON.stringify([
+          {
+            id: Date.now(),
+            title: "Sample Task",
+            checked: false,
+            editing: false,
+          },
+          {
+            id: Date.now() + 1,
+            title: "Checked Task",
+            checked: true,
+            editing: false,
+          },
+        ])
+      );
+    }
+  },
+  get: (target) => {
+    const storedData = localStorage.getItem(target);
+    if (storedData) {
+      try {
+        return JSON.parse(storedData);
+      } catch (error) {
+        console.error("Error parsing JSON data:", error);
+        return undefined; // در صورت بروز خطا، مقدار undefined برمی‌گردد
       }
-      break;
-  }
+    }
+    return null; // اگر داده‌ای وجود نداشته باشد، مقدار null برمی‌گردد
+  },
+  set: (target, data) => {
+    localStorage.setItem(target, JSON.stringify(data));
+  },
+  clear: () => {
+    localStorage.clear();
+  },
+};
+// DOM
+let DOM;
+function DOMCache() {
+  DOM = {
+    toDo: {
+      addBtn: document.querySelector("#todo-add"),
+      input: document.querySelector("#todo-input"),
+      list: document.querySelector(".todo-list"),
+    },
+    timer: {
+      suggestionBtns: [...document.querySelectorAll(".timer-suggestion")],
+      minInput: document.querySelector(".timer-input-min"),
+      secInput: document.querySelector(".timer-input-sec"),
+      playPauseBtn: document.querySelector(".playpause-btn"),
+      resetBtn: document.querySelector(".reset-btn"),
+      editBtn: document.querySelector(".edit-btn"),
+    },
+    note: document.querySelector(".note"),
+    clearMemoryBtn: document.querySelector(".clear-memory"),
+    toggleTheme: document.querySelector(".theme-toggle"),
+    tab: {
+      tabBtns: [...document.querySelectorAll(".tab-toggle")],
+      closeBtns: [...document.querySelectorAll(".close-tab")],
+      tabs: [...document.querySelectorAll(".tab")],
+    },
+  };
 }
+// state
+let state;
+function getState() {
+  state = {
+    timerRunning: false,
+    editingTimer: false,
+    openedTab: null,
+    configured: storage.get("configured"),
+    darkMode: storage.get("darkMode"),
+    note: storage.get("note"),
+    timer: storage.get("timer"),
+    savedTimer: storage.get("savedTimer"),
+    tasks: storage.get("tasks"),
+  };
+}
+
+function setState(key, data) {
+  state[key] = data;
+  storage.set(key, data);
+}
+
+DOMCache();
 function clearMemory() {
-  let btn = document.querySelector(".clear-memory");
-  btn.addEventListener("click", () => {
+  DOM.clearMemoryBtn.addEventListener("click", () => {
     if (confirm("Clearing Memory\nAre you sure to clear all data from WorkState?")) {
-      localStorageConfig("clear");
+      storage.clear();
       if (confirm("After clearing Memory you must refresh your browser to configure again.")) location.reload();
     }
   });
@@ -69,90 +106,110 @@ function clearMemory() {
 // Theme
 function darkMode(mode) {
   document.body.setAttribute("data-theme", mode ? "dark" : "light");
-  document.querySelector(".theme-toggle").children[0].classList.add(mode ? "fa-moon" : "fa-sun-alt");
-  document.querySelector(".theme-toggle").children[0].classList.remove(!mode ? "fa-moon" : "fa-sun-alt");
+  DOM.toggleTheme.children[0].classList.add(mode ? "fa-moon" : "fa-sun-alt");
+  DOM.toggleTheme.children[0].classList.remove(!mode ? "fa-moon" : "fa-sun-alt");
+  setState("darkMode", mode);
 }
 themeMode.addEventListener("change", () => {
   darkMode(themeMode.matches);
 });
-document.querySelector(".theme-toggle").addEventListener("click", () => {
-  localStorageConfig("post", "darkMode", !localStorageConfig("get", "darkMode"));
-  darkMode(localStorageConfig("get", "darkMode"));
+DOM.toggleTheme.addEventListener("click", () => {
+  setState("darkMode", !state.darkMode);
+  darkMode(state.darkMode);
 });
 
 // tabs
 
-let openedTab = null;
 let tabDeley = 150;
 
 function TabBtn() {
-  let tabBtns = [...document.querySelectorAll(".tab-toggle")];
-  let closeBtns = [...document.querySelectorAll(".close-tab")];
-  let tabs = [...document.querySelectorAll(".tab")];
-
-  tabBtns.map((tabBtn) =>
+  DOM.tab.tabBtns.map((tabBtn) =>
     tabBtn.addEventListener("click", () => {
-      if (openedTab != null) {
-        if (openedTab !== null && openedTab === tabBtn.getAttribute("data-target")) {
+      if (state.openedTab != null) {
+        if (state.openedTab !== null && state.openedTab === tabBtn.getAttribute("data-target")) {
           closeTabs();
           return;
         }
-        document.querySelector(openedTab).classList.remove("visible");
+        document.querySelector(state.openedTab).classList.remove("visible");
         setTimeout(() => {
-          document.querySelector(openedTab).classList.remove("active");
-          document.querySelector(`button[data-target="${openedTab}"]`).classList.remove("active");
-          openedTab = tabBtn.getAttribute("data-target");
+          document.querySelector(state.openedTab).classList.remove("active");
+          document.querySelector(`button[data-target="${state.openedTab}"]`).classList.remove("active");
+          state.openedTab = tabBtn.getAttribute("data-target");
           openTab();
         }, tabDeley);
       } else {
-        openedTab = tabBtn.getAttribute("data-target");
+        state.openedTab = tabBtn.getAttribute("data-target");
         openTab();
       }
     })
   );
-  closeBtns.map((closeBtn) => {
+  DOM.tab.closeBtns.map((closeBtn) => {
     closeBtn.addEventListener("click", closeTabs);
   });
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") {
-      closeTabs();
-    }
-  });
+  DOM.tab.tabs.map((tab) =>
+    tab.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        closeTabs();
+      }
+    })
+  );
 }
 
 function openTab() {
-  document.querySelector(openedTab).classList.add("active");
-  setTimeout(() => document.querySelector(openedTab).classList.add("visible"), 0);
-  document.querySelector(`button[data-target="${openedTab}"]`).classList.add("active");
+  document.querySelector(state.openedTab).classList.add("active");
+  setTimeout(() => document.querySelector(state.openedTab).classList.add("visible"), 0);
+  document.querySelector(`button[data-target="${state.openedTab}"]`).classList.add("active");
 }
 function closeTabs() {
-  document.querySelector(openedTab).classList.remove("visible");
+  document.querySelector(state.openedTab).classList.remove("visible");
   setTimeout(() => {
-    document.querySelector(openedTab).classList.remove("active");
-    document.querySelector(`button[data-target="${openedTab}"]`).classList.remove("active");
-    openedTab = null;
+    document.querySelector(state.openedTab).classList.remove("active");
+    document.querySelector(`button[data-target="${state.openedTab}"]`).classList.remove("active");
+    state.openedTab = null;
   }, tabDeley);
 }
 
 // Todo List
 function ToDo() {
   updateList();
-  let btn = document.querySelector("#todo-add");
-  btn.addEventListener("click", () => {
-    addToDo(document.querySelector("#todo-input").value);
+  DOM.toDo.addBtn.addEventListener("click", () => {
+    addToDo(DOM.toDo.input.value);
     updateList();
   });
-  document.addEventListener("keyup", (e) => {
+  DOM.toDo.input.addEventListener("keyup", (e) => {
     if (e.key === "Enter") {
-      addToDo(document.querySelector("#todo-input").value);
+      addToDo(DOM.toDo.input.value);
       updateList();
     }
   });
+  DOM.toDo.list.addEventListener("click", handleTodoClick);
+  DOM.toDo.list.addEventListener("change", handleTodoChange);
+}
+function handleTodoClick(e) {
+  const task = e.target.closest("li");
+
+  if (!task) return;
+
+  const id = Number(task.dataset.id);
+
+  if (e.target.closest(".delete-todo")) {
+    delToDo(id);
+  }
+
+  if (e.target.closest(".edit-todo")) {
+    editToDo(id);
+  }
+}
+function handleTodoChange(e) {
+  if (!e.target.matches("[type='checkbox']")) return;
+
+  const id = Number(e.target.closest("li").dataset.id);
+
+  checkToDo(id);
 }
 function updateList() {
-  let container = document.querySelector(".todo-list");
-  container.innerHTML = "";
-  toDoData = localStorageConfig("get", "tasks");
+  DOM.toDo.list.innerHTML = "";
+  let toDoData = [...state.tasks];
 
   toDoData.sort((a, b) => a.checked - b.checked);
 
@@ -165,69 +222,61 @@ function updateList() {
       Task.setAttribute("data-id", elem.id);
       if (elem.checked) Task.classList.add("checked");
       Task.innerHTML = `
-     <input type="checkbox" onchange="editToDo('check', '${elem.id}')" ${elem.checked ? "checked" : ""}>
-     <input type="text" value="${elem.title}" readonly dir='auto'/>
+     <input type="checkbox" ${elem.checked ? "checked" : ""}>
+     <input type="text" value="${elem.title}" ${elem.editing ? "" : "readonly"} dir='auto'/>
      <div>
-       <button onclick="editToDo('edit title', ${elem.id})">
-         <i class="fa fa-pencil-alt"></i>
+       <button class="edit-todo">
+         <i class="fa ${elem.editing ? "fa-check" : "fa-pencil-alt"}"></i>
        </button>
-       <button class="delete-todo" onclick="delToDo(${elem.id})">
+       <button class="delete-todo">
          <i class="fa fa-trash-alt"></i>
        </button>
      </div>
   `;
-      container.appendChild(Task);
+      DOM.toDo.list.appendChild(Task);
     });
-  } else container.appendChild(NoTask);
+  } else DOM.toDo.list.appendChild(NoTask);
 }
 function addToDo(taskTitle) {
-  if (document.querySelector("#todo-input").value) {
-    let toDoData = [{id: Date.now(), title: taskTitle, checked: false}];
-    localStorageConfig("post", "tasks", [...toDoData, ...localStorageConfig("get", "tasks")]);
+  if (DOM.toDo.input.value) {
+    let toDoData = [{id: Date.now(), title: taskTitle, checked: false, editing: false}];
+    setState("tasks", [...toDoData, ...state.tasks]);
   }
-  document.querySelector("#todo-input").value = "";
-  document.querySelector("#todo-input").focus();
+  DOM.toDo.input.value = "";
+  DOM.toDo.input.focus();
 }
-function editToDo(mode, id) {
-  let data = localStorageConfig("get", "tasks");
-  let Task = document.querySelector(`[data-id="${+id}"]`);
-  let title;
-  switch (mode) {
-    case "check":
-      data.forEach((elem) => {
-        if (+elem.id === +id) {
-          elem.checked = !elem.checked;
-        }
-      });
+function checkToDo(id) {
+  let data = state.tasks;
 
-      localStorageConfig("post", "tasks", data);
-      updateList();
-      break;
-    case "edit title":
-      Task.children[1].removeAttribute("readonly");
-      Task.children[2].children[0].innerHTML = '<i class="fa fa-check"></i>';
-      Task.children[2].children[0].setAttribute("onclick", `editToDo('send edited title', ${id})`);
-      break;
-    case "send edited title":
-      title = document.querySelector(`[data-id="${id}"]`).children[1].value;
+  data.forEach((elem) => {
+    if (elem.id == id) {
+      elem.checked = !elem.checked;
+    }
+  });
 
-      data.forEach((elem) => {
-        if (+elem.id === +id) {
-          elem.title = title;
-        }
-      });
-      Task.children[1].setAttribute("readonly", "");
-      Task.children[2].children[0].innerHTML = '<i class="fa fa-pencil-alt"></i>';
-      Task.children[2].children[0].setAttribute("onclick", `editToDo('edit title', ${id})`);
-
-      localStorageConfig("post", "tasks", data);
-      break;
-  }
+  setState("tasks", data);
+  updateList();
 }
+
+function editToDo(id) {
+  let data = state.tasks;
+
+  data.forEach((elem) => {
+    if (elem.id == id) {
+      if (elem.editing) {
+        elem.editing = false;
+        elem.title = document.querySelector(`[data-id='${id}']`).children[1].value;
+      } else elem.editing = true;
+    }
+  });
+  setState("tasks", data);
+  updateList();
+}
+
 function delToDo(id) {
-  let data = localStorageConfig("get", "tasks");
+  let data = state.tasks;
   data = data.filter((elem) => elem.id != id);
-  localStorageConfig("post", "tasks", data);
+  setState("tasks", data);
   updateList();
 }
 
@@ -236,89 +285,106 @@ let timerInterval;
 let seconds;
 let minutes;
 function Timer() {
-  let input = document.querySelector(".timer-input");
-  let suggestionBtns = [...document.querySelectorAll(".timer-suggestion")];
-
-  suggestionBtns.map((btn) => {
+  DOM.timer.suggestionBtns.map((btn) => {
     btn.addEventListener("click", () => {
+      state.editingTimer = false;
       clearInterval(timerInterval);
-      localStorageConfig(
-        "post",
+      setState(
         "timer",
         (btn.getAttribute("data-time-minute") == null ? 0 : btn.getAttribute("data-time-minute")) * 60 + (btn.getAttribute("data-time-second") == null ? 0 : btn.getAttribute("data-time-second"))
       );
-      localStorageConfig(
-        "post",
+      setState(
         "savedTimer",
         (btn.getAttribute("data-time-minute") == null ? 0 : btn.getAttribute("data-time-minute")) * 60 + (btn.getAttribute("data-time-second") == null ? 0 : btn.getAttribute("data-time-second"))
       );
-      input.value =
-        (Math.floor(localStorageConfig("get", "timer") / 60).toString().length < 2 ? "0" + Math.floor(localStorageConfig("get", "timer") / 60) : Math.floor(localStorageConfig("get", "timer") / 60)) +
-        ":" +
-        ((localStorageConfig("get", "timer") % 60).toString().length < 2 ? "0" + (localStorageConfig("get", "timer") % 60) : localStorageConfig("get", "timer") % 60);
+
+      DOM.timer.minInput.value = Math.floor(state.timer / 60).toString().length < 2 ? "0" + Math.floor(state.timer / 60) : Math.floor(state.timer / 60);
+      DOM.timer.secInput.value = (state.timer % 60).toString().length < 2 ? "0" + (state.timer % 60) : state.timer % 60;
     });
   });
+  DOM.timer.playPauseBtn.addEventListener("click", () => {
+    if (state.timerRunning) {
+      pauseTimer();
+    } else {
+      playTimer();
+    }
+  });
+  DOM.timer.resetBtn.addEventListener("click", resetTimer);
+  DOM.timer.editBtn.addEventListener("click", editTimer);
 }
-function playTimer(mode, display, btn) {
-  switch (mode) {
-    case "start":
-      if (localStorageConfig("get", "timer") != 0) {
-        document.querySelector(btn).setAttribute("onclick", "playTimer('pause','.timer-input','.playpause-btn')");
-        document.querySelector(btn).innerHTML = `<i class="fa fa-pause"></i>`;
-        timerInterval = setInterval(() => {
-          seconds = localStorageConfig("get", "timer");
-          if (seconds != 0) {
-            minutes = Math.floor(seconds / 60);
-            seconds = seconds - minutes * 60;
-            document.querySelector(display).value = (minutes.toString().length < 2 ? `0${minutes}` : minutes) + ":" + (seconds.toString().length < 2 ? `0${seconds}` : seconds);
-            localStorageConfig("post", "timer", +localStorageConfig("get", "timer") - 1);
-          } else {
-            document.querySelector(display).value = "00:00";
-            pauseTimer();
-          }
-        }, 1000);
+function playTimer() {
+  clearInterval(timerInterval);
+  if (state.timer != 0) {
+    DOM.timer.playPauseBtn.innerHTML = `<i class="fa fa-pause"></i>`;
+    timerInterval = setInterval(() => {
+      seconds = state.timer;
+      if (seconds != 0) {
+        minutes = Math.floor(seconds / 60);
+        seconds = seconds - minutes * 60;
+        DOM.timer.minInput.value = minutes.toString().length < 2 ? `0${minutes}` : minutes;
+        DOM.timer.secInput.value = seconds.toString().length < 2 ? `0${seconds}` : seconds;
+        setState("timer", +state.timer - 1);
+      } else {
+        pauseTimer();
+        DOM.timer.minInput.value = "00";
+        DOM.timer.secInput.value = "00";
       }
-      break;
-    case "pause":
-      document.querySelector(btn).setAttribute("onclick", "playTimer('start','.timer-input','.playpause-btn')");
-      document.querySelector(btn).innerHTML = `<i class="fa fa-play"></i>`;
-      clearInterval(timerInterval);
-      break;
+    }, 1000);
+    state.timerRunning = true;
   }
 }
-function resetTimer(input) {
+function pauseTimer() {
+  DOM.timer.playPauseBtn.innerHTML = `<i class="fa fa-play"></i>`;
   clearInterval(timerInterval);
-  localStorageConfig("post", "timer", localStorageConfig("get", "savedTimer"));
-  document.querySelector(input).value =
-    (Math.floor(localStorageConfig("get", "timer") / 60).toString().length < 2 ? "0" + Math.floor(localStorageConfig("get", "timer") / 60) : Math.floor(localStorageConfig("get", "timer") / 60)) +
-    ":" +
-    ((localStorageConfig("get", "timer") % 60).toString().length < 2 ? "0" + (localStorageConfig("get", "timer") % 60) : localStorageConfig("get", "timer") % 60);
+  state.timerRunning = false;
 }
-function editTimer(mode, btn, input) {
-  switch (mode) {
-    case "edit":
-      document.querySelector(btn).setAttribute("onclick", "editTimer('send','.edit-btn','.timer-input')");
-      document.querySelector(btn).innerHTML = '<i class="fa fa-check"></i>';
+function resetTimer() {
+  if (state.editingTimer) return;
+  pauseTimer();
+  setState("timer", state.savedTimer);
+  DOM.timer.minInput.value = Math.floor(state.timer / 60).toString().length < 2 ? "0" + Math.floor(state.timer / 60) : Math.floor(state.timer / 60);
+  DOM.timer.secInput.value = (state.timer % 60).toString().length < 2 ? "0" + (state.timer % 60) : state.timer % 60;
+}
+function editTimer() {
+  if (state.editingTimer) {
+    DOM.timer.editBtn.innerHTML = '<i class="fa fa-pencil-alt"></i>';
+    minutes = +DOM.timer.minInput.value;
+    seconds = +DOM.timer.secInput.value;
+    setState("timer", minutes * 60 + seconds);
+    setState("savedTimer", minutes * 60 + seconds);
+    DOM.timer.minInput.setAttribute("readonly", "");
+    DOM.timer.secInput.setAttribute("readonly", "");
+    state.editingTimer = false;
+  } else {
+    state.editingTimer = true;
+    pauseTimer();
+    DOM.timer.editBtn.innerHTML = '<i class="fa fa-check"></i>';
 
-      document.querySelector(input).removeAttribute("readonly");
-
-      break;
-    case "send":
-      document.querySelector(btn).setAttribute("onclick", "editTimer('edit','.edit-btn','.timer-input')");
-      document.querySelector(btn).innerHTML = '<i class="fa fa-pencil-alt"></i>';
-      let [minutes, seconds] = document.querySelector(input).value.split(":").map(Number);
-      localStorageConfig("post", "timer", minutes * 60 + seconds);
-      document.querySelector(input).setAttribute("readonly", "");
+    DOM.timer.minInput.removeAttribute("readonly");
+    DOM.timer.secInput.removeAttribute("readonly");
   }
 }
 
 // Note
-var Note = document.querySelector(".note");
 function saveNote() {
-  Note.addEventListener("keyup", () => {
-    localStorageConfig("post", "note", document.querySelector(".note").value);
+  DOM.note.addEventListener("keyup", () => {
+    setState("note", DOM.note.value);
   });
 }
 function getNote() {
-  Note.value = localStorageConfig("get", "note");
+  DOM.note.value = state.note ? state.note : "";
 }
+
+//
+//
+window.addEventListener("DOMContentLoaded", () => {
+  storage.init();
+  clearMemory();
+  getState();
+  darkMode(state.darkMode ?? themeMode.matches);
+  TabBtn();
+  ToDo();
+  Timer();
+  saveNote();
+  getNote();
+});
